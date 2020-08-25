@@ -75,6 +75,7 @@
         android:layout_above="@+id/registerBtn"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="12dp"
+        android:id="@+id/progressBar"
         android:indeterminate="true"
         android:indeterminateTint="@color/colorPrimary"
         android:visibility="gone" />
