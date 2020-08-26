@@ -4,16 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/layout_bg"
-    tools:context=".RegisterActivity">
+    tools:context=".LoginActivity">
 
     <TextView
+        android:id="@+id/headerTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="42dp"
-        android:text="Register"
-        android:textColor="#ffffff"
-        android:textSize="26sp"
+        android:layout_margin="28sp"
+        android:text="Login"
+        android:textColor="#fff"
+        android:textSize="32sp"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -21,19 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:orientation="vertical"
-        android:padding="6dp">
-
-        <EditText
-            android:id="@+id/nameET"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/text_box"
-            android:elevation="2dp"
-            android:hint="Name"
-            android:inputType="text"
-            android:padding="10dp" />
+        android:padding="8dp">
 
         <EditText
             android:id="@+id/emailET"
@@ -55,19 +43,7 @@
             android:layout_marginBottom="8dp"
             android:background="@drawable/text_box"
             android:elevation="2dp"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:padding="10dp" />
-
-        <EditText
-            android:id="@+id/confirmPass"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/text_box"
-            android:elevation="2dp"
-            android:hint="Confirm Password"
+            android:hint="Passwor "
             android:inputType="textPassword"
             android:padding="10dp" />
     </LinearLayout>
@@ -77,38 +53,32 @@
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/registerBtn"
+        android:layout_above="@+id/loginBtn"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="12dp"
+        android:layout_margin="22dp"
         android:indeterminate="true"
-        android:indeterminateTint="@color/colorPrimary"
-        android:visibility="gone" />
+        android:indeterminateTint="@color/colorPrimary" />
 
     <Button
-        android:id="@+id/registerBtn"
+        android:id="@+id/loginBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/login_tv"
+        android:layout_above="@+id/signup_tv"
         android:layout_alignParentEnd="true"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="32dp"
+        android:layout_margin="12dp"
         android:background="@drawable/btn"
-        android:minWidth="160dp"
-        android:text="Register"
-        android:textColor="@android:color/white" />
+        android:text="Login"
+        android:textColor="#fff" />
 
     <TextView
-        android:id="@+id/login_tv"
+        android:id="@+id/signup_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="12dp"
-        android:padding="6dp"
-        android:text="Already sign up, Login"
+        android:layout_margin="12dp"
+        android:text="Create Account, Sign up"
         android:textColor="#673AB7"
         android:textSize="16sp"
         android:textStyle="bold" />
-
 </RelativeLayout>
