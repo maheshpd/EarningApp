@@ -7,4 +7,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AppTheme.Main" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#DF90F1</item>
+        <item name="colorPrimaryDark">#dB6Bf4</item>
+        <item name="colorAccent">#3F51B5</item>
+    </style>
 </resources>

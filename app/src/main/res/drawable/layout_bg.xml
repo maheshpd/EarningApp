@@ -6,7 +6,8 @@
     android:viewportHeight="100">
 
     <path
-        android:name="dark_trangle"
-        android:fillColor="#763AB7"
-        android:pathData="M 0,0 S 100, 0 0, 100 z" />
+        android:name="dark_triangle"
+        android:fillColor="#673AB7"
+        android:pathData="M 0,0 S 100,0 0,100 z" />
+
 </vector>
