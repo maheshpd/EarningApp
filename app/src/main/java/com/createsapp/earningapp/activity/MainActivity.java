@@ -1,6 +1,8 @@
-package com.createsapp.earningapp;
+package com.createsapp.earningapp.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -10,6 +12,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 
 import com.bumptech.glide.Glide;
+import com.createsapp.earningapp.R;
 import com.createsapp.earningapp.model.ProfileModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -46,6 +49,17 @@ public class MainActivity extends AppCompatActivity {
 
         getDataFromDatabase();
 
+        clickListener();
+
+    }
+
+    private void clickListener() {
+        profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+            }
+        });
     }
 
     private void init() {
