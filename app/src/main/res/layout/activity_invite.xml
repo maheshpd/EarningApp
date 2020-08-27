@@ -71,6 +71,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
+
+    <Button
+        android:id="@+id/redeemBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/btn"
+        android:backgroundTint="#FFEb3B"
+        android:minWidth="150dp"
+        android:text="Redeem Code"
+        app:layout_constraintBottom_toTopOf="@+id/shareBtn"
+        app:layout_constraintEnd_toEndOf="@+id/shareBtn"
+        app:layout_constraintStart_toStartOf="@+id/shareBtn" />
+
     <Button
         android:id="@+id/shareBtn"
         android:layout_width="wrap_content"
@@ -83,4 +97,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
