@@ -152,12 +152,17 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void updateUI(FirebaseUser user, String email) {
+
+        String refer = email.substring(0, email.lastIndexOf("@"));
+        String referCode = refer.replace(".", "");
+
         HashMap<String, Object> map = new HashMap<>();
         map.put("name", nameEdit.getText().toString());
         map.put("email", email);
         map.put("uid", user.getUid());
         map.put("image", "");
         map.put("coins", 0);
+        map.put("referCode", referCode);
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users");
         reference.child(user.getUid())
