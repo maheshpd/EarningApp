@@ -155,6 +155,7 @@ public class RegisterActivity extends AppCompatActivity {
         map.put("name", nameEdit.getText().toString());
         map.put("email", email);
         map.put("uid", user.getUid());
+        map.put("image", "");
         map.put("coins", 0);
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users");
