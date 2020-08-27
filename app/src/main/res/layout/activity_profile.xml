@@ -143,6 +143,7 @@
         android:background="@drawable/btn"
         android:minWidth="150dp"
         android:text="Update"
+        android:visibility="gone"
         android:textColor="#fff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
