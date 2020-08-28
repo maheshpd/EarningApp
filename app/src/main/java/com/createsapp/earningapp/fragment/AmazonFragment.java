@@ -2,6 +2,7 @@ package com.createsapp.earningapp.fragment;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -136,6 +137,12 @@ public class AmazonFragment extends Fragment {
                             public void onPermissionsChecked(MultiplePermissionsReport report) {
                                 if (report.areAllPermissionsGranted()) {
 
+                                    String filePath = Environment.getExternalStorageDirectory()
+                                            + "/Earning App/Amazon Gift Card";
+                                    File file = new File(filePath);
+                                    file.mkdirs();
+
+
                                     int currentCoins = Integer.parseInt(coinsTv.getText().toString());
                                     int checkedId = radioGroup.getCheckedRadioButtonId();
 
@@ -167,10 +174,14 @@ public class AmazonFragment extends Fragment {
             if (currentCoins >= 6000) { //minimum coins should be 6000
                 sendGiftCard(1);
 
+            } else {
+                Toast.makeText(getContext(), "You do not have enough", Toast.LENGTH_SHORT).show();
             }
         } else if (amazonCard == 50) {
             if (currentCoins >= 12000) {
                 sendGiftCard(2);
+            } else {
+                Toast.makeText(getContext(), "You do not have enough", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -226,7 +237,7 @@ public class AmazonFragment extends Fragment {
 
     private void printAmazonCode(String id, String amazonCode, int cardAmount) {
 
-        updateDate(cardAmount);
+        updateDate(cardAmount, id);
 
 
         Date date = Calendar.getInstance().getTime();
@@ -240,7 +251,7 @@ public class AmazonFragment extends Fragment {
                 "Amazon Claim Code: " + amazonCode;
 
         PdfDocument pdfDocument = new PdfDocument();
-        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(400, 800, 1).create();
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(800, 800, 1).create();
         PdfDocument.Page page = pdfDocument.startPage(pageInfo);
 
         Paint paint = new Paint();
@@ -270,12 +281,16 @@ public class AmazonFragment extends Fragment {
         intent.setDataAndType(Uri.fromFile(file), "application/pdf");
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 
-        startActivity(Intent.createChooser(intent, "Open with"));
+        try {
+            startActivity(Intent.createChooser(intent, "Open with"));
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(getContext(), "Please install pdf reader", Toast.LENGTH_SHORT).show();
+        }
 
 
     }
 
-    private void updateDate(int cardAmount) {
+    private void updateDate(int cardAmount, String id) {
         HashMap<String, Object> map = new HashMap<>();
         int currrentCoins = Integer.parseInt(coinsTv.getText().toString());
         if (cardAmount == 1) { //User select 25$ option
@@ -300,7 +315,8 @@ public class AmazonFragment extends Fragment {
                     }
                 });
 
-
+        FirebaseDatabase.getInstance().getReference().child("Gift Cards").child("Amazon")
+                .child(id).removeValue();
     }
 
 
