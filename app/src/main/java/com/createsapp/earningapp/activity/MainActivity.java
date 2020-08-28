@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -15,6 +16,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 
 import com.bumptech.glide.Glide;
+import com.createsapp.earningapp.Internet;
 import com.createsapp.earningapp.R;
 import com.createsapp.earningapp.model.ProfileModel;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,6 +29,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -49,12 +54,19 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseUser user;
     private Dialog dialog;
 
+    Internet internet;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         init();
+
+        internet = new Internet(MainActivity.this);
+
+        checkInternetConnection();
+
 
         setSupportActionBar(toolbar);
         FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -150,122 +162,186 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void checkInternetConnection() {
+        if (internet.isConnected()) {
+            new isInternetActive().execute();
+        } else {
+            Toast.makeText(this, "Please check your internet", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
     private void dailyCheck() {
-        final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
-        sweetAlertDialog.setTitleText("Please wait");
-        sweetAlertDialog.setCancelable(false);
-        sweetAlertDialog.show();
 
-        final Date currentDate = Calendar.getInstance().getTime();
+        if (internet.isConnected()) {
 
-        final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+            final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+            sweetAlertDialog.setTitleText("Please wait");
+            sweetAlertDialog.setCancelable(false);
+            sweetAlertDialog.show();
 
-        final String date = dateFormat.format(currentDate);
+            final Date currentDate = Calendar.getInstance().getTime();
 
-        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+            final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
 
-        reference.child("Daily Check").child(user.getUid())
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
-                            String dbDateString = snapshot.child("date").getValue(String.class);
+            final String date = dateFormat.format(currentDate);
 
-                            try {
-                                assert dbDateString != null;
-                                Date dbDate = dateFormat.parse(dbDateString);
+            final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
-                                String xDate = dateFormat.format(currentDate);
-                                Date date = dateFormat.parse(xDate);
+            reference.child("Daily Check").child(user.getUid())
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                String dbDateString = snapshot.child("date").getValue(String.class);
+
+                                try {
+                                    assert dbDateString != null;
+                                    Date dbDate = dateFormat.parse(dbDateString);
+
+                                    String xDate = dateFormat.format(currentDate);
+                                    Date date = dateFormat.parse(xDate);
 
 
-                                if (date.after(dbDate) && date.compareTo(dbDate) != 0) {
-                                    //reward available
+                                    if (date.after(dbDate) && date.compareTo(dbDate) != 0) {
+                                        //reward available
 
-                                    reference.child("Users").child(user.getUid())
-                                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                    ProfileModel model = snapshot.getValue(ProfileModel.class);
+                                        reference.child("Users").child(user.getUid())
+                                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        ProfileModel model = snapshot.getValue(ProfileModel.class);
 
-                                                    int currentCoins = model.getCoins();
-                                                    int update = currentCoins + 10;
-                                                    int spinC = model.getSpins();
-                                                    int updatedSpins = spinC + 2;
-                                                    HashMap<String, Object> map = new HashMap<>();
-                                                    map.put("coins", update);
-                                                    map.put("spin", updatedSpins);
+                                                        int currentCoins = model.getCoins();
+                                                        int update = currentCoins + 10;
+                                                        int spinC = model.getSpins();
+                                                        int updatedSpins = spinC + 2;
+                                                        HashMap<String, Object> map = new HashMap<>();
+                                                        map.put("coins", update);
+                                                        map.put("spin", updatedSpins);
 
-                                                    reference.child("Users").child(user.getUid())
-                                                            .updateChildren(map);
+                                                        reference.child("Users").child(user.getUid())
+                                                                .updateChildren(map);
 
-                                                    Date newDate = Calendar.getInstance().getTime();
-                                                    String newDateString = dateFormat.format(newDate);
+                                                        Date newDate = Calendar.getInstance().getTime();
+                                                        String newDateString = dateFormat.format(newDate);
 
-                                                    HashMap<String, String> dateMap = new HashMap<>();
-                                                    dateMap.put("date", newDateString);
+                                                        HashMap<String, String> dateMap = new HashMap<>();
+                                                        dateMap.put("date", newDateString);
 
-                                                    reference.child("Daily Check").child(user.getUid()).setValue(dateMap)
-                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<Void> task) {
-                                                                    sweetAlertDialog.changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
-                                                                    sweetAlertDialog.setTitleText("Success");
-                                                                    sweetAlertDialog.setContentText("Coins added to your account successfully");
-                                                                    sweetAlertDialog.setConfirmText("Dismiss");
-                                                                    sweetAlertDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                                                        @Override
-                                                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                                                            sweetAlertDialog.dismissWithAnimation();
-                                                                        }
-                                                                    }).show();
-                                                                }
-                                                            });
+                                                        reference.child("Daily Check").child(user.getUid()).setValue(dateMap)
+                                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                                        sweetAlertDialog.changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+                                                                        sweetAlertDialog.setTitleText("Success");
+                                                                        sweetAlertDialog.setContentText("Coins added to your account successfully");
+                                                                        sweetAlertDialog.setConfirmText("Dismiss");
+                                                                        sweetAlertDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                                            @Override
+                                                                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                                                sweetAlertDialog.dismissWithAnimation();
+                                                                            }
+                                                                        }).show();
+                                                                    }
+                                                                });
 
-                                                }
+                                                    }
 
-                                                @Override
-                                                public void onCancelled(@NonNull DatabaseError error) {
-                                                    Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
+                                                        Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
 
-                                } else {
-                                    sweetAlertDialog.changeAlertType(SweetAlertDialog.ERROR_TYPE);
-                                    sweetAlertDialog.setTitleText("Failed");
-                                    sweetAlertDialog.setContentText("You have already rewarded, come back tomorrow");
-                                    sweetAlertDialog.setConfirmText("Dismiss");
-                                    sweetAlertDialog.show();
-                                }
+                                    } else {
+                                        sweetAlertDialog.changeAlertType(SweetAlertDialog.ERROR_TYPE);
+                                        sweetAlertDialog.setTitleText("Failed");
+                                        sweetAlertDialog.setContentText("You have already rewarded, come back tomorrow");
+                                        sweetAlertDialog.setConfirmText("Dismiss");
+                                        sweetAlertDialog.show();
+                                    }
 
-                            } catch (ParseException e) {
-                                e.printStackTrace();
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
 
-                                sweetAlertDialog.dismissWithAnimation();
-                            }
-                        } else {
-                            sweetAlertDialog.changeAlertType(SweetAlertDialog.WARNING_TYPE);
-                            sweetAlertDialog.setTitleText("System Busy");
-                            sweetAlertDialog.setContentText("System is busy, please try again later!");
-                            sweetAlertDialog.setConfirmText("Dismiss");
-                            sweetAlertDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                @Override
-                                public void onClick(SweetAlertDialog sweetAlertDialog) {
                                     sweetAlertDialog.dismissWithAnimation();
                                 }
-                            });
+                            } else {
+                                sweetAlertDialog.changeAlertType(SweetAlertDialog.WARNING_TYPE);
+                                sweetAlertDialog.setTitleText("System Busy");
+                                sweetAlertDialog.setContentText("System is busy, please try again later!");
+                                sweetAlertDialog.setConfirmText("Dismiss");
+                                sweetAlertDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                        sweetAlertDialog.dismissWithAnimation();
+                                    }
+                                });
 
-                            sweetAlertDialog.show();
+                                sweetAlertDialog.show();
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
 
-                        sweetAlertDialog.dismissWithAnimation();
+                            sweetAlertDialog.dismissWithAnimation();
 
-                    }
-                });
+                        }
+                    });
+        } else {
+            Toast.makeText(this, "Please check your internet", Toast.LENGTH_SHORT).show();
+        }
     }
+
+    class isInternetActive extends AsyncTask<Void, Void, String> {
+
+        @Override
+        protected String doInBackground(Void... voids) {
+
+            InputStream inputStream = null;
+            String json = "";
+
+            try {
+                String strURL = "";
+                URL url = new URL(strURL);
+
+                URLConnection urlConnection = url.openConnection();
+
+                urlConnection.setDoOutput(true);
+                inputStream = urlConnection.getInputStream();
+                json = "success";
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                json = "failed";
+            }
+
+            return json;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+
+            if (s != null) {
+                if (s.equals("success")) {
+                    Toast.makeText(MainActivity.this, "Internet Connected", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "No Internet", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(MainActivity.this, "No Internet", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            Toast.makeText(MainActivity.this, "Validating internet", Toast.LENGTH_SHORT).show();
+            super.onPreExecute();
+        }
+    }
+
 }
