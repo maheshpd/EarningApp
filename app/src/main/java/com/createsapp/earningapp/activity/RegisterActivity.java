@@ -21,7 +21,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -163,6 +167,24 @@ public class RegisterActivity extends AppCompatActivity {
         map.put("image", "");
         map.put("coins", 0);
         map.put("referCode", referCode);
+        map.put("spins", 2);
+
+        Date date = Calendar.getInstance().getTime();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_MONTH, -1); //to get yesterday date
+
+        Date previousDate = calendar.getTime();
+
+        String dateString = dateFormat.format(previousDate);
+
+        FirebaseDatabase.getInstance().getReference().child("Daily Check")
+                .child(user.getUid())
+                .child("date")
+                .setValue(dateString);
+
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users");
         reference.child(user.getUid())

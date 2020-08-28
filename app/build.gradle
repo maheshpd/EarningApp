@@ -48,4 +48,6 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
     implementation 'com.karumi:dexter:6.2.1'
+
+    implementation 'com.github.f0ris.sweetalert:library:1.5.1'
 }

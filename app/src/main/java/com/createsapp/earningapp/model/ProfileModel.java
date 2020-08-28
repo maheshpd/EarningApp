@@ -2,16 +2,25 @@ package com.createsapp.earningapp.model;
 
 public class ProfileModel {
     private String name, email, image;
-    private int coins;
+    private int coins, spins;
 
     public ProfileModel() {
     }
 
-    public ProfileModel(String name, String email, String image, int coins) {
+    public ProfileModel(String name, String email, String image, int coins, int spins) {
         this.name = name;
         this.email = email;
         this.image = image;
         this.coins = coins;
+        this.spins = spins;
+    }
+
+    public int getSpins() {
+        return spins;
+    }
+
+    public void setSpins(int spins) {
+        this.spins = spins;
     }
 
     public String getName() {
