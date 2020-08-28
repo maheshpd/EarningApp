@@ -13,8 +13,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        tools:replace="android:icon"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="android:icon">
+        <activity android:name=".fragment.FragmentReplacerActivity"></activity>
+        <activity android:name=".activity.RedeemActivity" />
         <activity android:name=".activity.InviteActivity" />
         <activity android:name=".activity.ProfileActivity" />
         <activity android:name=".activity.SplashActivity">

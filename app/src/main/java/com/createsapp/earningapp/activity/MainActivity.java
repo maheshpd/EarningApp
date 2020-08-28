@@ -85,6 +85,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        redeemCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, RedeemActivity.class));
+            }
+        });
+
     }
 
     private void init() {
