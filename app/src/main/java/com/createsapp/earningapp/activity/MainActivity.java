@@ -1,6 +1,9 @@
 package com.createsapp.earningapp.activity;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private CircleImageView profileImage;
     private TextView coinsTv, nameTv, emailTv;
     private FirebaseUser user;
+    private Dialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,9 +111,18 @@ public class MainActivity extends AppCompatActivity {
         emailTv = findViewById(R.id.emailTv);
         profileImage = findViewById(R.id.profileImage);
         toolbar = findViewById(R.id.toolbar);
+
+        dialog = new Dialog(this);
+        dialog.setContentView(R.layout.loading_dialog);
+        if (dialog.getWindow() != null)
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCancelable(false);
+
     }
 
     private void getDataFromDatabase() {
+
+        dialog.show();
         reference.child(user.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -124,10 +137,13 @@ public class MainActivity extends AppCompatActivity {
                         .timeout(6000)
                         .placeholder(R.drawable.profile)
                         .into(profileImage);
+
+                dialog.dismiss();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                dialog.dismiss();
                 Toast.makeText(MainActivity.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                 finish();
             }

@@ -11,6 +11,7 @@ import androidx.cardview.widget.CardView;
 
 import com.bumptech.glide.Glide;
 import com.createsapp.earningapp.R;
+import com.createsapp.earningapp.fragment.FragmentReplacerActivity;
 
 public class RedeemActivity extends AppCompatActivity {
 
@@ -51,7 +52,7 @@ public class RedeemActivity extends AppCompatActivity {
         amazonCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent();
+                Intent intent = new Intent(RedeemActivity.this, FragmentReplacerActivity.class);
                 intent.putExtra("position", 1);
                 startActivity(intent);
             }
