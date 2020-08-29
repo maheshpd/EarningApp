@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -89,10 +90,21 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             //login success
 
-                            progressBar.setVisibility(View.GONE);
+//
 
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                            finish();
+                            FirebaseUser user = auth.getCurrentUser();
+                            //Check if user is verified
+                            if (user.isEmailVerified()) {
+                                progressBar.setVisibility(View.GONE);
+                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                finish();
+
+
+                            } else {
+                                progressBar.setVisibility(View.GONE);
+                                Toast.makeText(LoginActivity.this, "Please verify your email", Toast.LENGTH_SHORT).show();
+                            }
+
                         } else {
                             progressBar.setVisibility(View.GONE);
                             Toast.makeText(LoginActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();

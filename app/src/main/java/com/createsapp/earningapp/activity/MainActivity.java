@@ -20,6 +20,11 @@ import com.createsapp.earningapp.Internet;
 import com.createsapp.earningapp.R;
 import com.createsapp.earningapp.fragment.FragmentReplacerActivity;
 import com.createsapp.earningapp.model.ProfileModel;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -57,6 +62,10 @@ public class MainActivity extends AppCompatActivity {
 
     Internet internet;
 
+    //Admob
+    AdView adView;
+    InterstitialAd interstitialAd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +76,20 @@ public class MainActivity extends AppCompatActivity {
         internet = new Internet(MainActivity.this);
 
         checkInternetConnection();
+
+        //initialize admob sdk
+        MobileAds.initialize(this);
+
+       /* AdView adView = new AdView(this);
+        adView.setAdSize(AdSize.BANNER);
+        adView.setAdUnitId(getString(R.string.admob_banner_id));*/
+
+        adView = findViewById(R.id.banner_id);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+
+        //admob inters ads
+        loadInterstitialAd();
 
 
         setSupportActionBar(toolbar);
@@ -84,14 +107,14 @@ public class MainActivity extends AppCompatActivity {
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                showInterstitalAd(1);
             }
         });
 
         referCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, InviteActivity.class));
+                showInterstitalAd(2);
             }
         });
 
@@ -114,6 +137,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, FragmentReplacerActivity.class);
                 intent.putExtra("position", 2);
+                startActivity(intent);
+            }
+        });
+
+        aboutCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, FragmentReplacerActivity.class);
+                intent.putExtra("position", 3);
                 startActivity(intent);
             }
         });
@@ -306,6 +338,38 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void loadInterstitialAd() {
+        interstitialAd = new InterstitialAd(this);
+        interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
+
+        interstitialAd.loadAd(new AdRequest.Builder().build());
+
+    }
+
+    private void showInterstitalAd(final int i) {
+//
+
+        if (interstitialAd.isLoaded()) {
+            interstitialAd.show();
+
+            interstitialAd.setAdListener(new AdListener() {
+                @Override
+                public void onAdClosed() {
+                    super.onAdClosed();
+                    if (i == 1) { //that mean user click on profile button
+                        startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                    }
+
+                    if (i == 2) {
+                        startActivity(new Intent(MainActivity.this, InviteActivity.class));
+                    }
+
+                }
+            });
+        }
+
+    }
+
     class isInternetActive extends AsyncTask<Void, Void, String> {
 
         @Override
@@ -318,7 +382,7 @@ public class MainActivity extends AppCompatActivity {
                 //Url contain small android icon to check internet access
                 //replace with your own url or with icon url
                 //For more icon go to: https://icons.iconarchive.com/
-                String strURL = "https://icons.iconarchive.com/icons/martz90/circle/256/android-icon.png";
+                String strURL = "https://icons.iconarchive.com/";
                 URL url = new URL(strURL);
 
                 URLConnection urlConnection = url.openConnection();
@@ -343,7 +407,7 @@ public class MainActivity extends AppCompatActivity {
                 if (s.equals("success")) {
                     Toast.makeText(MainActivity.this, "Internet Connected", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(MainActivity.this, "No Internet", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "No Internet access", Toast.LENGTH_SHORT).show();
                 }
             } else {
                 Toast.makeText(MainActivity.this, "No Internet", Toast.LENGTH_SHORT).show();

@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">EarningApp</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="admob_banner_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="admob_interstitial_id">ca-app-pub-3940256099942544/1033173712</string>
+
+    <string name="fb_banner_id">549167759165615_549192715829786</string>
+    <string name="fb_interstital_id">549167759165615_549190905829967</string>
+    <string name="fb_rewarded_id">549167759165615_549192132496511</string>
 </resources>

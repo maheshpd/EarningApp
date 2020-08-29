@@ -29,7 +29,12 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
 
                 if (user != null) {
-                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
+
+                    if (user.isEmailVerified()) {
+                        startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                    } else {
+                        startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                    }
                 } else {
                     startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                 }

@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
-        <activity android:name=".fragment.FragmentReplacerActivity"></activity>
+        <activity android:name=".fragment.FragmentReplacerActivity" />
         <activity android:name=".activity.RedeemActivity" />
         <activity android:name=".activity.InviteActivity" />
         <activity android:name=".activity.ProfileActivity" />
@@ -32,6 +32,11 @@
         <activity
             android:name=".activity.MainActivity"
             android:theme="@style/AppTheme.Main" />
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/admob_app_id" />
+
     </application>
 
 </manifest>

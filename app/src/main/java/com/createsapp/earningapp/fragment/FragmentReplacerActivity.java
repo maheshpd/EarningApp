@@ -38,6 +38,12 @@ public class FragmentReplacerActivity extends AppCompatActivity {
             fragmentReplacer(new LuckySpin());
         }
 
+        if (position == 3) {
+            if (getSupportActionBar() != null)
+                getSupportActionBar().setTitle("Lucky Spin");
+
+            fragmentReplacer(new LuckySpin());
+        }
 
     }
 
