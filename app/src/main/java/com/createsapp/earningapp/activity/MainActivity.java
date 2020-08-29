@@ -305,7 +305,10 @@ public class MainActivity extends AppCompatActivity {
             String json = "";
 
             try {
-                String strURL = "";
+                //Url contain small android icon to check internet access
+                //replace with your own url or with icon url
+                //For more icon go to: https://icons.iconarchive.com/
+                String strURL = "https://icons.iconarchive.com/icons/martz90/circle/256/android-icon.png";
                 URL url = new URL(strURL);
 
                 URLConnection urlConnection = url.openConnection();

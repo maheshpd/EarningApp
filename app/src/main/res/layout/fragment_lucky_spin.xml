@@ -1,9 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.LuckySpin">
 
+    <com.createsapp.earningapp.spin.WheelView
+        android:id="@+id/wheelView"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_centerInParent="true"
+        app:BackgroundColor="#ff9800"
+        app:CenterImage="@drawable/wheel2"
+        app:CursorImage="@drawable/ic_cursor"
+        app:TextColor="#263238" />
 
-</FrameLayout>
+    <Button
+        android:id="@+id/playBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="32dp"
+        android:background="@drawable/btn"
+        android:backgroundTint="#F44336"
+        android:minWidth="180dp"
+        android:text="Spin the Wheel"
+        android:textColor="#fff" />
+
+
+</RelativeLayout>

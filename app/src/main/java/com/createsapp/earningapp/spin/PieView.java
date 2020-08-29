@@ -27,7 +27,7 @@ public class PieView extends View {
     private boolean isRunning = false;
     private int defaultBackgroundColor = -1;
     private Drawable drawableCenterImage;
-    private int textColor = 0xfffffff;
+    private int textColor = 0xffffffff;
     private List<SpinItem> spinItemList;
     private PieRotateListener pieRotateListener;
 
@@ -69,6 +69,11 @@ public class PieView extends View {
 
     public void setPieTextColot(int color) {
         textColor = color;
+        invalidate();
+    }
+
+    public void setPieBackgroundColor(int color) {
+        defaultBackgroundColor = color;
         invalidate();
     }
 
@@ -159,7 +164,7 @@ public class PieView extends View {
         return (360 / spinItemList.size() * tempIndex);
     }
 
-    private void setRoundedOfNumber(int roundedOfNumber) {
+    public void setRound(int roundedOfNumber) {
         roundedOfNumber = roundOfNumber;
     }
 
@@ -207,7 +212,7 @@ public class PieView extends View {
     }
 
 
-    private interface PieRotateListener {
+    public interface PieRotateListener {
         void rotateDone(int index);
     }
 

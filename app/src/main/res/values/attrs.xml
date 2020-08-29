@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="WheelView">
+
+        <attr name="BackgroundColor" format="reference" />
+        <attr name="TextColor" format="color" />
+        <attr name="CursorImage" format="reference" />
+        <attr name="CenterImage" format="reference" />
+    </declare-styleable>
+</resources>
