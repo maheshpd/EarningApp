@@ -21,7 +21,7 @@ public class PieView extends View {
 
     private RectF range = new RectF();
     private int radius;
-    private Paint mArcpaint, mBackgroundPaint, mTextPaint;
+    private Paint mArcPaint, mBackgroundPaint, mTextPaint;
     private float mStartAngle = 0;
     private int center, padding, targetIndex, roundOfNumber = 4;
     private boolean isRunning = false;
@@ -35,7 +35,7 @@ public class PieView extends View {
         super(context);
     }
 
-    private PieView(Context context, AttributeSet attrs) {
+    public PieView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -44,9 +44,9 @@ public class PieView extends View {
     }
 
     private void init() {
-        mArcpaint = new Paint();
-        mArcpaint.setAntiAlias(true);
-        mArcpaint.setDither(true);
+        mArcPaint = new Paint();
+        mArcPaint.setAntiAlias(true);
+        mArcPaint.setDither(true);
 
         mTextPaint = new Paint();
         mTextPaint.setColor(textColor);
@@ -67,7 +67,7 @@ public class PieView extends View {
         invalidate();
     }
 
-    public void setPieTextColot(int color) {
+    public void setPieTextColor(int color) {
         textColor = color;
         invalidate();
     }
@@ -92,8 +92,8 @@ public class PieView extends View {
         float sweepAngle = 360 / spinItemList.size();
 
         for (int i = 0; i < spinItemList.size(); i++) {
-            mArcpaint.setColor(spinItemList.get(i).color);
-            canvas.drawArc(range, temAngle, sweepAngle, true, mArcpaint);
+            mArcPaint.setColor(spinItemList.get(i).color);
+            canvas.drawArc(range, temAngle, sweepAngle, true, mArcPaint);
             drawText(canvas, temAngle, sweepAngle, spinItemList.get(i).text);
             temAngle += sweepAngle;
         }
@@ -151,7 +151,7 @@ public class PieView extends View {
 
         float txtWidth = mTextPaint.measureText(string);
 
-        int offSet = (int) (radius * Math.PI / spinItemList.size() / -txtWidth / 2);
+        int offSet = (int) (radius * Math.PI / spinItemList.size() / 2 - txtWidth / 2);
         int vOffSet = radius / 2 / 4;
 
 
@@ -176,7 +176,7 @@ public class PieView extends View {
         targetIndex = index;
         setRotation(0);
 
-        float targetAngle = 350 + roundOfNumber + 270 - getAngleOfTargetIndex() + (360 / spinItemList.size()) / 2;
+        float targetAngle = 350 * roundOfNumber + 270 - getAngleOfTargetIndex() + (360 / spinItemList.size()) / 2;
         animate().setInterpolator(new DecelerateInterpolator())
                 .setDuration(roundOfNumber * 500 + 900L)
                 .setListener(new Animator.AnimatorListener() {
@@ -207,6 +207,7 @@ public class PieView extends View {
                 .start();
     }
 
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
         return false;
     }

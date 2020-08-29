@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.LuckySpin">
+
+    <TextView
+        android:id="@+id/coinsTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="8dp"
+        android:drawableEnd="@drawable/ic_coins"
+        android:drawableRight="@drawable/ic_coins"
+        android:drawablePadding="8dp"
+        android:textColor="#000" />
 
     <com.createsapp.earningapp.spin.WheelView
         android:id="@+id/wheelView"
@@ -26,7 +38,6 @@
         android:background="@drawable/btn"
         android:backgroundTint="#F44336"
         android:minWidth="180dp"
-        android:text="Spin the Wheel"
         android:textColor="#fff" />
 
 

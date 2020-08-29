@@ -22,14 +22,18 @@ public class WheelView extends RelativeLayout implements PieView.PieRotateListen
 
     private LuckyRoundItemSelectedListener itemSelectedListener;
 
+    public WheelView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        inits(context, attrs);
+    }
+
     public WheelView(Context context) {
         super(context);
         inits(context, null);
     }
 
-    private WheelView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        inits(context, attrs);
+    public void LuckyRoundItemSelectedListener(LuckyRoundItemSelectedListener listener) {
+        this.itemSelectedListener = listener;
     }
 
     @Override
@@ -60,7 +64,7 @@ public class WheelView extends RelativeLayout implements PieView.PieRotateListen
         pieView.setPieRotateListener(this);
         pieView.setPieBackgroundColor(mBackgroundColor);
         pieView.setPieCenterImage(mCenterImage);
-        pieView.setPieTextColot(mTextColor);
+        pieView.setPieTextColor(mTextColor);
 
         imgCursor.setImageDrawable(mCursorImage);
 
@@ -80,7 +84,7 @@ public class WheelView extends RelativeLayout implements PieView.PieRotateListen
     }
 
     public void setWheelTextColor(int color) {
-        pieView.setPieTextColot(color);
+        pieView.setPieTextColor(color);
     }
 
     public void setData(List<SpinItem> data) {

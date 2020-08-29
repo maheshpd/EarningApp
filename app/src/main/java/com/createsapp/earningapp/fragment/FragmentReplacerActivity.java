@@ -31,6 +31,13 @@ public class FragmentReplacerActivity extends AppCompatActivity {
             fragmentReplacer(new AmazonFragment());
         }
 
+        if (position == 2) {
+            if (getSupportActionBar() != null)
+                getSupportActionBar().setTitle("Lucky Spin");
+
+            fragmentReplacer(new LuckySpin());
+        }
+
 
     }
 

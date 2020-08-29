@@ -18,6 +18,7 @@ import androidx.cardview.widget.CardView;
 import com.bumptech.glide.Glide;
 import com.createsapp.earningapp.Internet;
 import com.createsapp.earningapp.R;
+import com.createsapp.earningapp.fragment.FragmentReplacerActivity;
 import com.createsapp.earningapp.model.ProfileModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -105,6 +106,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this, RedeemActivity.class));
+            }
+        });
+
+        luckyCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, FragmentReplacerActivity.class);
+                intent.putExtra("position", 2);
+                startActivity(intent);
             }
         });
 
