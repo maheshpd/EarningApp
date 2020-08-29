@@ -1,6 +1,6 @@
 package com.createsapp.earningapp.spin;
 
-public class spinItem {
+public class SpinItem {
 
     String text;
     int color, icon;
