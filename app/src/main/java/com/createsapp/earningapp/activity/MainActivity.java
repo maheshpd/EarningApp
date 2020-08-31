@@ -20,11 +20,14 @@ import com.createsapp.earningapp.Internet;
 import com.createsapp.earningapp.R;
 import com.createsapp.earningapp.fragment.FragmentReplacerActivity;
 import com.createsapp.earningapp.model.ProfileModel;
+import com.facebook.ads.Ad;
+import com.facebook.ads.AdError;
+import com.facebook.ads.AdSettings;
+import com.facebook.ads.InterstitialAdExtendedListener;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -66,6 +69,9 @@ public class MainActivity extends AppCompatActivity {
     AdView adView;
     InterstitialAd interstitialAd;
 
+    //facebook
+    com.facebook.ads.InterstitialAd mInterstitial;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,15 +81,12 @@ public class MainActivity extends AppCompatActivity {
 
         internet = new Internet(MainActivity.this);
 
+        AdSettings.isTestMode(this); //for testing
+
         checkInternetConnection();
 
-        //initialize admob sdk
-        MobileAds.initialize(this);
 
-       /* AdView adView = new AdView(this);
-        adView.setAdSize(AdSize.BANNER);
-        adView.setAdUnitId(getString(R.string.admob_banner_id));*/
-
+        //admob banner ads
         adView = findViewById(R.id.banner_id);
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
@@ -107,14 +110,14 @@ public class MainActivity extends AppCompatActivity {
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showInterstitalAd(1);
+                showInterstitialAd(1);
             }
         });
 
         referCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showInterstitalAd(2);
+                showInterstitialAd(2);
             }
         });
 
@@ -128,25 +131,28 @@ public class MainActivity extends AppCompatActivity {
         redeemCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, RedeemActivity.class));
+                showInterstitialAd(3);
             }
         });
 
         luckyCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, FragmentReplacerActivity.class);
-                intent.putExtra("position", 2);
-                startActivity(intent);
+                showInterstitialAd(4);
             }
         });
 
         aboutCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, FragmentReplacerActivity.class);
-                intent.putExtra("position", 3);
-                startActivity(intent);
+                showInterstitialAd(5);
+            }
+        });
+
+        watchCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showInterstitialAd(6);
             }
         });
 
@@ -339,15 +345,101 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadInterstitialAd() {
+
+        //admob init
         interstitialAd = new InterstitialAd(this);
         interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
-
         interstitialAd.loadAd(new AdRequest.Builder().build());
 
+        //fb init
+        mInterstitial = new com.facebook.ads.InterstitialAd(this, getString(R.string.fb_interstital_id));
+        mInterstitial.loadAd();
     }
 
-    private void showInterstitalAd(final int i) {
-//
+    private void showInterstitialAd(final int i) {
+
+        //facebook ad
+        if (mInterstitial.isAdLoaded()) {
+            mInterstitial.show();
+            mInterstitial.setAdListener(new InterstitialAdExtendedListener() {
+                @Override
+                public void onInterstitialActivityDestroyed() {
+
+                }
+
+                @Override
+                public void onInterstitialDisplayed(Ad ad) {
+
+                }
+
+                @Override
+                public void onInterstitialDismissed(Ad ad) {
+
+                    if (i == 1) { //that mean user click on profile button
+                        startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                    }
+
+                    if (i == 2) { //refer code
+                        startActivity(new Intent(MainActivity.this, InviteActivity.class));
+                    }
+
+                    if (i == 3) { // redeem card
+                        startActivity(new Intent(MainActivity.this, RedeemActivity.class));
+                    }
+
+                    if (i == 4) { //lucky card
+                        Intent intent = new Intent(MainActivity.this, FragmentReplacerActivity.class);
+                        intent.putExtra("position", 2);
+                        startActivity(intent);
+                    }
+
+                    if (i == 5) {  //about card
+                        Intent intent = new Intent(MainActivity.this, FragmentReplacerActivity.class);
+                        intent.putExtra("position", 3);
+                        startActivity(intent);
+                    }
+
+
+                }
+
+                @Override
+                public void onError(Ad ad, AdError adError) {
+
+                }
+
+                @Override
+                public void onAdLoaded(Ad ad) {
+
+                }
+
+                @Override
+                public void onAdClicked(Ad ad) {
+
+                }
+
+                @Override
+                public void onLoggingImpression(Ad ad) {
+
+                }
+
+                @Override
+                public void onRewardedAdCompleted() {
+
+                }
+
+                @Override
+                public void onRewardedAdServerSucceeded() {
+
+                }
+
+                @Override
+                public void onRewardedAdServerFailed() {
+
+                }
+            });
+
+            return;
+        }
 
         if (interstitialAd.isLoaded()) {
             interstitialAd.show();
@@ -360,13 +452,62 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(new Intent(MainActivity.this, ProfileActivity.class));
                     }
 
-                    if (i == 2) {
+                    if (i == 2) { //refer code
                         startActivity(new Intent(MainActivity.this, InviteActivity.class));
                     }
 
+                    if (i == 3) { // redeem card
+                        startActivity(new Intent(MainActivity.this, RedeemActivity.class));
+                    }
+
+                    if (i == 4) { //lucky card
+                        Intent intent = new Intent(MainActivity.this, FragmentReplacerActivity.class);
+                        intent.putExtra("position", 2);
+                        startActivity(intent);
+                    }
+
+                    if (i == 5) {  //about card
+                        Intent intent = new Intent(MainActivity.this, FragmentReplacerActivity.class);
+                        intent.putExtra("position", 3);
+                        startActivity(intent);
+                    }
+
+                    if (i == 6) {
+                        startActivity(new Intent(MainActivity.this, WatchActivity.class));
+                    }
+
+
                 }
             });
+
+            return;
         }
+
+        //if ads not loaded then startActivity without showing  ads
+        if (i == 1) { //that mean user click on profile button
+            startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+        }
+
+        if (i == 2) { //refer code
+            startActivity(new Intent(MainActivity.this, InviteActivity.class));
+        }
+
+        if (i == 3) { // redeem card
+            startActivity(new Intent(MainActivity.this, RedeemActivity.class));
+        }
+
+        if (i == 4) { //lucky card
+            Intent intent = new Intent(MainActivity.this, FragmentReplacerActivity.class);
+            intent.putExtra("position", 2);
+            startActivity(intent);
+        }
+
+        if (i == 5) {  //about card
+            Intent intent = new Intent(MainActivity.this, FragmentReplacerActivity.class);
+            intent.putExtra("position", 3);
+            startActivity(intent);
+        }
+
 
     }
 

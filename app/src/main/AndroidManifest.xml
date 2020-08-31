@@ -4,6 +4,7 @@
     package="com.createsapp.earningapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -16,7 +17,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
-        <activity android:name=".fragment.FragmentReplacerActivity" />
+
+
+        <activity
+            android:name=".activity.WatchActivity"
+            android:hardwareAccelerated="true" />
+        <activity
+            android:name=".fragment.FragmentReplacerActivity"
+            android:hardwareAccelerated="true" />
+
         <activity android:name=".activity.RedeemActivity" />
         <activity android:name=".activity.InviteActivity" />
         <activity android:name=".activity.ProfileActivity" />
@@ -36,7 +45,6 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/admob_app_id" />
-
     </application>
 
 </manifest>

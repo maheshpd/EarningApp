@@ -16,6 +16,8 @@ import com.createsapp.earningapp.R;
 import com.createsapp.earningapp.model.ProfileModel;
 import com.createsapp.earningapp.spin.SpinItem;
 import com.createsapp.earningapp.spin.WheelView;
+import com.facebook.ads.InterstitialAd;
+import com.facebook.ads.RewardedVideoAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,6 +42,9 @@ public class LuckySpin extends Fragment {
     private FirebaseUser user;
     int currentSpin;
 
+    private RewardedVideoAd rewardedVideoAd;
+    private InterstitialAd interstitialAd;
+
     public LuckySpin() {
         // Required empty public constructor
     }
@@ -56,6 +61,8 @@ public class LuckySpin extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        loadAd();
 
         init(view);
         loadData();
@@ -148,9 +155,13 @@ public class LuckySpin extends Fragment {
                 playBtn.setEnabled(true);
                 playBtn.setAlpha(1f);
 
-                String value = spinItemList.get(index - 1).text;
+                //wheel stop rotating:: here to show ad
+                showAd();
 
+                String value = spinItemList.get(index - 1).text;
                 updateDataFirebase(Integer.parseInt(value));
+
+
             }
         });
     }
@@ -240,6 +251,32 @@ public class LuckySpin extends Fragment {
                 });
 
 
+    }
+
+    private void loadAd() {
+
+        if (getContext() == null)
+            return;
+
+        rewardedVideoAd = new RewardedVideoAd(getContext(), getString(R.string.fb_rewarded_id));
+        rewardedVideoAd.loadAd();
+
+        interstitialAd = new InterstitialAd(getContext(), getString(R.string.fb_interstital_id));
+        interstitialAd.loadAd();
+    }
+
+    private void showAd() {
+
+        if (rewardedVideoAd.isAdLoaded() && rewardedVideoAd.isAdInvalidated()) {
+            rewardedVideoAd.show();
+
+            //Reward video ad is loaded no need to show interstitial ad
+            return;
+        }
+
+        if (interstitialAd.isAdLoaded()) {
+            interstitialAd.show();
+        }
     }
 
 }

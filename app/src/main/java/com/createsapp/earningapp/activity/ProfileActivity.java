@@ -18,6 +18,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.createsapp.earningapp.R;
 import com.createsapp.earningapp.model.ProfileModel;
+import com.facebook.ads.Ad;
+import com.facebook.ads.AdError;
+import com.facebook.ads.InterstitialAdListener;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -60,12 +66,19 @@ public class ProfileActivity extends AppCompatActivity {
 
     private ProgressDialog progressDialog;
 
+    private InterstitialAd interstitialAd;
+    private com.facebook.ads.InterstitialAd mInterstitial;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
         init();
+
+        loadInterstitialAd();
+
         loadDataFromDatabase();
         clickListener();
 
@@ -250,4 +263,79 @@ public class ProfileActivity extends AppCompatActivity {
                 });
 
     }
+
+    private void loadInterstitialAd() {
+
+        //admob init
+        interstitialAd = new InterstitialAd(this);
+        interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
+        interstitialAd.loadAd(new AdRequest.Builder().build());
+
+        //fb init
+        mInterstitial = new com.facebook.ads.InterstitialAd(this, getString(R.string.fb_interstital_id));
+        mInterstitial.loadAd();
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        //fb
+        if (mInterstitial.isAdLoaded()) {
+            mInterstitial.show();
+
+            mInterstitial.setAdListener(new InterstitialAdListener() {
+                @Override
+                public void onInterstitialDisplayed(Ad ad) {
+
+                }
+
+                @Override
+                public void onInterstitialDismissed(Ad ad) {
+                    finish();
+                }
+
+                @Override
+                public void onError(Ad ad, AdError adError) {
+
+                }
+
+                @Override
+                public void onAdLoaded(Ad ad) {
+
+                }
+
+                @Override
+                public void onAdClicked(Ad ad) {
+
+                }
+
+                @Override
+                public void onLoggingImpression(Ad ad) {
+
+                }
+            });
+
+            return;
+        }
+
+        //admob: //if fb ad not loaded then show admob ad
+        if (interstitialAd.isLoaded()) {
+            interstitialAd.show();
+
+            interstitialAd.setAdListener(new AdListener() {
+                @Override
+                public void onAdClosed() {
+                    super.onAdClosed();
+                    finish();
+                }
+            });
+
+            return;
+        }
+
+
+        finish();
+
+    }
+
 }

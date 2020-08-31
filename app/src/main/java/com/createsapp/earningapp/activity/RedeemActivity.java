@@ -12,11 +12,20 @@ import androidx.cardview.widget.CardView;
 import com.bumptech.glide.Glide;
 import com.createsapp.earningapp.R;
 import com.createsapp.earningapp.fragment.FragmentReplacerActivity;
+import com.facebook.ads.Ad;
+import com.facebook.ads.AdError;
+import com.facebook.ads.InterstitialAdListener;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 
 public class RedeemActivity extends AppCompatActivity {
 
     private ImageView amazonImage;
     private CardView amazonCard;
+
+    private InterstitialAd interstitialAd;
+    private com.facebook.ads.InterstitialAd mInterstitial;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +33,9 @@ public class RedeemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_redeem);
 
         init();
+
+        loadInterstitialAd();
+
         loadImages();
         clickListener();
 
@@ -60,5 +72,78 @@ public class RedeemActivity extends AppCompatActivity {
 
     }
 
+    private void loadInterstitialAd() {
+
+        //admob init
+        interstitialAd = new InterstitialAd(this);
+        interstitialAd.setAdUnitId(getString(R.string.admob_interstitial_id));
+        interstitialAd.loadAd(new AdRequest.Builder().build());
+
+        //fb init
+        mInterstitial = new com.facebook.ads.InterstitialAd(this, getString(R.string.fb_interstital_id));
+        mInterstitial.loadAd();
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        //fb
+        if (mInterstitial.isAdLoaded()) {
+            mInterstitial.show();
+
+            mInterstitial.setAdListener(new InterstitialAdListener() {
+                @Override
+                public void onInterstitialDisplayed(Ad ad) {
+
+                }
+
+                @Override
+                public void onInterstitialDismissed(Ad ad) {
+                    finish();
+                }
+
+                @Override
+                public void onError(Ad ad, AdError adError) {
+
+                }
+
+                @Override
+                public void onAdLoaded(Ad ad) {
+
+                }
+
+                @Override
+                public void onAdClicked(Ad ad) {
+
+                }
+
+                @Override
+                public void onLoggingImpression(Ad ad) {
+
+                }
+            });
+
+            return;
+        }
+
+        //admob
+        if (interstitialAd.isLoaded()) {
+            interstitialAd.show();
+
+            interstitialAd.setAdListener(new AdListener() {
+                @Override
+                public void onAdClosed() {
+                    super.onAdClosed();
+                    finish();
+                }
+            });
+
+            return;
+        }
+
+        //
+        finish();
+
+    }
 
 }
